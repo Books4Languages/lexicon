@@ -51,7 +51,7 @@ class Lexicon_words_List extends WP_List_Table {
     }
 
     /**
-     * Retrieve customers data from the database
+     * Retrieve data from the database
      *
      * @param int $per_page
      * @param int $page_number
@@ -279,21 +279,17 @@ class Lexicon_words_List extends WP_List_Table {
                     $fullLanguage = $this->shortLangToFull(str_replace("_phrase", "", "$column_nameA"));
                     $column_nameB = $fullLanguage . " Phrase";
                 }
-                //$column_nameA = $word_details_cols[$i]->COLUMN_NAME;
-                //$column_nameB = $word_details_cols[$i]->COLUMN_NAME;
-                //$theArrayResult = [];
+
                 $theArrayResultTempB = ["$column_nameA" => __("$column_nameB", 'sp'),];
                 $theArrayResultTempA = array_merge($theArrayResultTempA, $theArrayResultTempB);
-                //$i = $i + 2;
                 $theArrayResult = $theArrayResultTempA;
             }
-            //echo print_r($theArrayResultTempA);
-            //return $theArrayResultTempA;
+
         }
         return $theArrayResult;
     }
 
-    public function shortLangToFull($variable) {
+    public function shortLangToFull($variable) { // Function to return full language name whith input of short language code
 
         global $wpdb;
 
@@ -349,7 +345,7 @@ class Lexicon_words_List extends WP_List_Table {
         $this->items = self::get_lexicon_words($per_page, $current_page);
     }
 
-    protected function display_tablenav($which) {
+    protected function display_tablenav($which) { // Use this functon to add the Add Word button in top and on the bottom of the table
         if ('top' === $which) {
             wp_nonce_field('bulk-' . $this->_args['plural']);
         }
@@ -480,11 +476,11 @@ class SP_Plugin {
         $admin->remove_cap('upload_csv');
     }
 
-    static function lexicon_install() {
+    static function lexicon_install() { //On lexicon install iclude the file install.php
         include_once(LEXICON_DIR . '/install.php');
     }
 
-    public function plugin_menu() {
+    public function plugin_menu() { //Plugin menu and submenu pages
         $hook = add_menu_page(
                 'Lexicon', 'Lexicon', 'manage_options', 'lexicon_testing'
         );
@@ -496,7 +492,7 @@ class SP_Plugin {
         add_action("load-$hook", [$this, 'screen_option']);
     }
 
-    public function lexicon_editors_page() {
+    public function lexicon_editors_page() { //Function to show editors page
         $lex_userId = get_current_user_id();
         $lex_userMetaSet = get_user_meta($lex_userId, "secondaryLang", true);
         $lex_userMetaSetAdd = get_user_meta($lex_userId, "additionalLang", true);
@@ -526,7 +522,7 @@ class SP_Plugin {
         }
     }
     
-    public function lexicon_lang_mgmt_page() {
+    public function lexicon_lang_mgmt_page() { //Function to show language management page
         ?>
         <div class="wrap" style="">
             <h2>Lexicon Language Management</h2>
@@ -548,7 +544,7 @@ class SP_Plugin {
         <?php
     }
 
-    public function lexicon_settings_page() {
+    public function lexicon_settings_page() { //Function to show lexicon settings page
         ?>
         <div class="wrap">
             <h2>Lexicon Settings</h2>
@@ -559,7 +555,7 @@ class SP_Plugin {
         <?php
     }
 
-    public function lexicon_impExp_page() {
+    public function lexicon_impExp_page() { //Function to show lexicon import/export page
         global $wpdb;
         ?>
         <div class="wrap">
@@ -598,7 +594,7 @@ class SP_Plugin {
     /**
      * Plugin settings page
      */
-    public function plugin_settings_page() {
+    public function plugin_settings_page() { //Function that shows the main page of the plugin and all the content of the words in the database
         ?>
         <div class="wrap">
             <h2>Lexicon Database Management</h2>
@@ -652,6 +648,8 @@ class SP_Plugin {
     }
 
 }
+
+//Hooks for plugin activation and deactivation
 
 add_action('activate_lexicon/lexicon.php', array('SP_Plugin', 'lexicon_install'));
 register_activation_hook(__FILE__, array('SP_Plugin', 'lexicon_activation'));

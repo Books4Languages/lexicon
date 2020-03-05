@@ -137,8 +137,10 @@ if (get_option("lexicon_db_version") == "") {
 
     if (!$error) {
         $wpdb->query('COMMIT');
-        lexicon_load_all_lang();
-        lexicon_load_word_categories();
+        lexicon_load_all_lang();  /* Execute function to import all languages in the database.
+                                    (The file lexicon_all_langs.csv inside the folder all_languages fills up the table _LEXICON_LANGUAGES) */
+        lexicon_load_word_categories(); /*Execute function to import english and spanish word categories in the database.
+                                    (The file cod_cat_final.csv inside the folder all_languages fills up the table _LEXICON_LANGUAGES)*/
         add_option("lexicon_db_version", $lexicon_db_version);
     } else {
         $wpdb->query('ROLLBACK');
@@ -316,5 +318,6 @@ if (get_option("lexicon_cleanup_db") == "") {
 }
 
 $lex_userId = get_current_user_id();
-add_user_meta($lex_userId, "primaryLang", "eng");
+add_user_meta($lex_userId, "primaryLang", "eng"); /* Set a use meta key calles primaryLang with value = eng. 
+                                                    We need it to save the plugin's primary language to use in the plugin settings page */
 ?>

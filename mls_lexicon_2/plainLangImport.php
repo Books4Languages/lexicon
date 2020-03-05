@@ -5,15 +5,15 @@ global $wpdb;
 <br />
 
 <?php
-if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_POST['formSubmit'])) {
-    if (isset($_POST['language'])) {
+if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_POST['formSubmit'])) {  //If we click on the submit button
+    if (isset($_POST['language'])) {    //Check if languages are checked
         $lexicon_lang = $_POST['language'];
     } else {
         $lexicon_lang = "";
     }
-    if (empty($lexicon_lang)) {
+    if (empty($lexicon_lang)) { //If empty echo message
         echo("You didn't select any language.");
-    } else {
+    } else { //Else for each language selected, add it in the DB
         $N = count($lexicon_lang);
 
         //echo("You selected $N language(s): ");
@@ -22,15 +22,16 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_POST['formSubmit'])) {
             lexicon_add_language_inDB($langToAdd, "no");
         }
         echo "All $N languages created successfully!";
-        wp_redirect(esc_url_raw(add_query_arg(array('page' => 'lexicon_testing'), admin_url('admin.php'))));
+        wp_redirect(esc_url_raw(add_query_arg(array('page' => 'lexicon_testing'), admin_url('admin.php')))); // Redirect int he end
     }
-} else {
+} else {    // Page shown when not clicked on the submit button
     $allLanguages = $wpdb->get_results("SELECT * FROM " . _LEXICON_LANGUAGES . " WHERE Part1 <> '' AND Language_Type = 'L' AND Status = 'inactive';");
     $counter = 0;
+    //  Get all languages that are not active
     ?>
     <table>
         <?php
-        foreach ($allLanguages as $language) {
+        foreach ($allLanguages as $language) { // For each not active language, echo a check box and there name
             $languageId = $language->id;
             $languageRefName = $language->Ref_Name;
             $langRefNameBrackCheck = strpos($languageRefName, "(");
@@ -67,7 +68,3 @@ if ('POST' == $_SERVER['REQUEST_METHOD'] && isset($_POST['formSubmit'])) {
 
     <?php
 }
-//session_start();
-//print_r($_SESSION["giannakis"]);
-//$petros = LEXICON_LANGNUM_RELATION;
-//echo var_dump(unserialize(_LEXICON_LANGNUM_RELATION));

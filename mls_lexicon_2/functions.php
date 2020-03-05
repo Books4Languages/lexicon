@@ -66,9 +66,9 @@ function lexicon_word_coexist() {
                 $singleColValue = $query[0]->$column;
 
                 if ($singleColValue !== '') {
-                    $newIndependentValues = lexicon_assign_nums(); //------>>>>DAME PREPI NA KALITE TO FUNCTION PU DIMIURGA TON PINAKA ME TO LANG - NUM RELATION
+                    $newIndependentValues = lexicon_assign_nums(); //------>>>>CALL FUNCTION THAT CREATES THE NUMBERS FOR WORDS
                 } else if ($singleColValue === '') {
-                    $newIndependentValues = lexicon_assign_nums("untranslated"); //------>>>>DAME PREPI NA KALITE TO FUNCTION PU DIMIURGA TON PINAKA ME TO LANG - NUM RELATION
+                    $newIndependentValues = lexicon_assign_nums("untranslated"); //------>>>>CALL FUNCTION THAT CREATES THE NUMBERS FOR WORDS
                 }
                 $newValues .= $newIndependentValues;
             }
@@ -108,17 +108,21 @@ function lexicon_word_coexist() {
  * Method for cassigning numbers to words, wether they are fuzzy, untranslated,
  * or whatever we want them to be
  * 
+ * @params: $type -- the type of the word or phrase
+ * 
  */
 function lexicon_assign_nums($type = "all") {
 
+    //Calling this function with the type parameter, translates the type to a number according to our prefer
+    
     switch ($type) {
-        case "untranslated":
+        case "untranslated": //If the ward is unttraslated 0 is returned
             return "0,";
-        case "all":
+        case "all": //all, is used for a normall situation
             return "1,";
-        case "fuzzy":
-            return "2,";
-    }
+        case "fuzzy": //If the word is fuzzy(has may meanings) we return 2
+            return "2,"; 
+    } //We can add as many cases as we want. Those numbers appear in word_coexist column in DB
 }
 /*
  * Method for loading various content
@@ -475,7 +479,7 @@ function lexicon_add_language_inDB($cols_to_add, $sendBack = "no") {
                 $wpdb->query('ROLLBACK');
             } else {
                 $wpdb->query('COMMIT');
-                lexicon_word_coexist();
+                lexicon_word_coexist(); // Whenever we add a language in the database, we update the coexist column
             }
         }
     }
@@ -748,15 +752,25 @@ function fetchFullLangWordDetails($counter, $langOffset = "", $wordOrPhrase = ""
             $GLOBALS['additionalCheck'] = true;
         }
 
-        $langsQueryPart1 = "SELECT Ref_Name FROM " . _LEXICON_LANGUAGES . " WHERE id='" . $lex_userPrimaryLang . "'";
-        $langsQueryPart2 = "SELECT Ref_Name FROM " . _LEXICON_LANGUAGES . " WHERE id='" . $lex_userSecondaryLang . "'";
-        $langsQueryPart3 = "SELECT Ref_Name FROM " . _LEXICON_LANGUAGES . " WHERE id='" . $lex_userAdditionalLang . "'";
-        $fullNameLangsPart1 = $wpdb->get_results($langsQueryPart1, 'ARRAY_A');
-        $fullNameLangsPart2 = $wpdb->get_results($langsQueryPart2, 'ARRAY_A');
-        $fullNameLangsPart3 = $wpdb->get_results($langsQueryPart3, 'ARRAY_A');
+		if( $GLOBALS['additionalCheck'] === true){
+			$langsQueryPart1 = "SELECT Ref_Name FROM " . _LEXICON_LANGUAGES . " WHERE id='" . $lex_userPrimaryLang . "'";
+			$langsQueryPart2 = "SELECT Ref_Name FROM " . _LEXICON_LANGUAGES . " WHERE id='" . $lex_userSecondaryLang . "'";
+			$langsQueryPart3 = "SELECT Ref_Name FROM " . _LEXICON_LANGUAGES . " WHERE id='" . $lex_userAdditionalLang . "'";
+			$fullNameLangsPart1 = $wpdb->get_results($langsQueryPart1, 'ARRAY_A');
+			$fullNameLangsPart2 = $wpdb->get_results($langsQueryPart2, 'ARRAY_A');
+			$fullNameLangsPart3 = $wpdb->get_results($langsQueryPart3, 'ARRAY_A');
 
-        $GLOBALS['fullNameLangs'] = array_column(array_merge_recursive($fullNameLangsPart1, $fullNameLangsPart2, $fullNameLangsPart3), 'Ref_Name');
+			$GLOBALS['fullNameLangs'] = array_column(array_merge_recursive($fullNameLangsPart1, $fullNameLangsPart2, $fullNameLangsPart3), 'Ref_Name');
+		} else if($GLOBALS['additionalCheck'] === false){
+			$langsQueryPart1 = "SELECT Ref_Name FROM " . _LEXICON_LANGUAGES . " WHERE id='" . $lex_userPrimaryLang . "'";
+			$langsQueryPart2 = "SELECT Ref_Name FROM " . _LEXICON_LANGUAGES . " WHERE id='" . $lex_userSecondaryLang . "'";
+			
+			$fullNameLangsPart1 = $wpdb->get_results($langsQueryPart1, 'ARRAY_A');
+			$fullNameLangsPart2 = $wpdb->get_results($langsQueryPart2, 'ARRAY_A');
 
+
+			$GLOBALS['fullNameLangs'] = array_column(array_merge_recursive($fullNameLangsPart1, $fullNameLangsPart2), 'Ref_Name');
+		}
         $mainQueryAdd = '';
         $activeLangsQuery = "SELECT id FROM " . _LEXICON_LANGUAGES . " WHERE Status='active'";
         $res = $wpdb->get_results($activeLangsQuery, 'ARRAY_A');
@@ -911,7 +925,7 @@ function sendBackFullLangWordDetails($counter, $langOffset = "", $wordOrPhrase =
     } else if ($langOffset === "" && $wordOrPhrase === "") {
         $tempTable = $GLOBALS['result'][$counter];
         $tempTableNew = array_combine(array_merge($tempTable, $GLOBALS['updatedKeys']), $tempTable);
-        write_log(var_dump($tempTableNew));
+        //write_log(var_dump($tempTableNew));
 
         return array(
             'wordDetails' => $tempTableNew,

@@ -117,8 +117,6 @@ function cancelMods(theId) {
 /*
  * Method for adding new words (on development)
  * 
- *  @param
- * 
  */
 function addWord() {
     document.getElementById("lexicon-table-content").style.display = "none";
@@ -127,8 +125,6 @@ function addWord() {
 }
 /*
  * Method for exiting the Add Word section
- * 
- *  
  * 
  */
 function backToLexicon() {
@@ -139,31 +135,31 @@ function backToLexicon() {
 /*
  * Method for exporting data to a csv file
  * 
- *  @param iterNum  - 
+ *  @param iterNum  - number of the columns in the file to export
  * 
  */
 function export_data_to_CSV(iterNum) {
 
-    var fullString = document.getElementById("data_to_export").innerHTML;
+    var fullString = document.getElementById("data_to_export").innerHTML; // Get the content that we will fill the csv file
 
-    for (var i = 0; i <= iterNum - 1; i++) {
+    for (var i = 0; i <= iterNum - 1; i++) {    // Store the content in parseFullString array
         var partString = fullString.split("<br/>", 1).toString();
         var partStringLength = partString.length;
         var fullStringTemp = fullString.slice(partStringLength);
         fullString = fullStringTemp;
         parseFullString[i] = partString;
     }
-    var finalText = parseFullString.toString();
+    var finalText = parseFullString.toString();     // Convert array to string
 
-    var searchNum = finalText.search("<br>");
+    var searchNum = finalText.search("<br>");       // Search for <br> in the string
 
-    while (searchNum != -1) {
+    while (searchNum != -1) {                       // While there are <br> in the text replace them with new line
         var final = finalText.replace("<br>", "\n");
         finalText = final;
         searchNum = finalText.search("<br>");
     }
 
-    var filename = "mydata.csv";
+    var filename = "mydata.csv";                // File name
     var csvFile = finalText.slice(0, -iterNum + 1);
     var blob = new Blob([csvFile], {type: 'text/csv;charset=utf-8;'});
     if (navigator.msSaveBlob) { // IE 10+
@@ -205,7 +201,7 @@ function showMoreLanguages(response) {
  * Method for defining what is importing
  * 
  *  @param selectedImpOpt  -  option that is selected
- * 
+ *  Description: Hides/Shows different sections for better user interaction
  */
 function showSelectedImpOpt(selectedImpOpt) {
     if (selectedImpOpt == "language") {
@@ -283,7 +279,7 @@ function settingsPageChangeLang() {
             + '<span style="width: 10px"></span>'
             + '<div id="updateLoader" class="loader"></div>'
             + '</div>';
-
+    //Add text according to which options are changed
     if (((secLangInitValue !== secondaryLangCurrValue) || !additionalLangAllowed) && (typeof secondaryLangCurrValue !== 'undefined' && secondaryLangCurrValue !== null)) {
         if (secLangInitValue !== secondaryLangCurrValue && (typeof secondaryLangCurrValue !== 'undefined' && secondaryLangCurrValue !== null)) {
             standardTextPt2 += standardTextPt1 + "Secondary Language from " + secLangInitValue.substring(3) + " to " + secondaryLangCurrValue.substring(3);
@@ -385,6 +381,9 @@ function editCurrentWord(theId) {
     }
 
 }
+
+//  AJAX METHODS START
+
 /*
  * Method for replacing content on that line in order to modify details
  * 
@@ -567,6 +566,9 @@ jQuery(document).on("submit", "#lexicon_EditorChange", function (e) {
             })
 
 });
+
+
+//  AJAX METHODS FINISH
 
 //CHECKBOX IN SETTINGS PAGE ON CHANGE EVENT
 if (document.getElementById("additionalLanguageDrop")) {

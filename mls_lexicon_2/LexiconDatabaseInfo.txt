@@ -1,0 +1,44 @@
+Database Tables:
+
+	lexicon_word_code: 
+		id: the id off each word
+		code: code of each word formed from Classification, Sub-Classification, Group and Example
+		level: level of the word
+		t_n: if the word is general or specific
+		word_coexists: column that describes the details of each word in the rest of the languages (eng,0,0,false 
+			-> english language(eng), the word(0) or the phrase(0) do not exist, and it's not a special word for 
+			the language(false)
+			
+		COMMENTS: Make a single column containing a code that represents the code, level, and general/specifical attribute.
+					The code column can be recreated from c_l,s_C,g_r and e_j column in the lexicon_word_details.
+	
+	lexicon_word_details:
+		code_id: the same as the id on the lexicon_word_code table
+		c_l: Classification of the word (2 digit)
+		s_c: Sub - Classification of the word (2 digit)
+		g_r: Group of word (2 digit)
+		e_j: Example of word (2 digit)
+		p: Point of the word (3 digit)
+		unit: unit of the word
+		theme: theme of the word
+		&&for every language 2 columns, one for word and one for phrase
+	
+	lexicon_languages: 
+		id: the id of the Language
+		Part2B: 3 digit language representation
+		Part2T: 3 digit language representation
+		Part1: 2 digit language representation
+		Scope: collective, macro, local, individual, special language
+		Language_Type: Living language - L, Extinct Language - E, Ancient - A, Geographig....
+		Ref_name: full name of the language
+		Comment: any necessary comments abou the language
+		Status: defines if the language is active on the plugin
+
+	lexicon_word_categories:
+		id: id of the category
+		t_n: if it is general or specifical
+		c_l: Classification
+		s_c: sub - classification
+		g_r: group
+		e_j: example
+		&& 1 column for each language that the category content is added.

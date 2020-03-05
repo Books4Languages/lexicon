@@ -1,7 +1,7 @@
 <div id="allWordsTable">
     <?php
-    for ($i = -1; $i < fetchFullLangWordDetails(-1, 'countArray'); $i++) {
-        if ($i !== -1) {
+    for ($i = -1; $i < fetchFullLangWordDetails(-1, 'countArray'); $i++) { //Get the number of iterations
+        if ($i !== -1) {    // Echo words
 
             echo '<div id="wordEditBox' . fetchFullLangWordDetails($i, 'all', 'none') . '" style="padding:16px; border-top: 1px solid rgba(168,151,145,0.3); display: inline-block; width: 90%">';
             echo '<div style="display: inline-flex; width: 90%">';
@@ -21,7 +21,7 @@
             echo '</div>';
 
             echo '<br/><br/>';
-        } else if ($i === -1) {
+        } else if ($i === -1) { // Echo languages (Titles on top -- English ... ... )
             echo '<div id="langTitlesBox" style="padding:16px; border-top: 1px solid rgba(168,151,145,0.3); display: inline-block; width: 90%">';
             echo '<div style="display: inline-flex; width: 90%">';
 

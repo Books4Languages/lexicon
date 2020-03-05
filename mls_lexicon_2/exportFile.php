@@ -1,22 +1,16 @@
 <?php
-/* vars for export */
-// database record to be exported
-//$db_record = 'words';
-// optional where query
-//$where = 'WHERE 1 ORDER BY 1';
-// filename for export
-//$csv_filename = 'db_export_' . $db_record . '_' . date('Y-m-d') . '.csv';
-// database variables
-//$conn = mysqli_connect($hostname, $user, $password, $database, $port);
-// create empty variable to be filled with export data
-// query to get data from database
-$csv_export = '';
+
+/*
+ * This file is used to export all the words from the database, to a csv file
+ * 
+ */
+
+$csv_export = ''; //Initialized variable that will hold all the content to export
 $query = "SELECT *
           FROM " . _LEXICON_WORD_CODE . "
           INNER JOIN " . _LEXICON_WORD_DETAILS . " ON " . _LEXICON_WORD_CODE . ".id=" . _LEXICON_WORD_DETAILS . ".code_id";
-//$field = mysqli_field_count($conn);
-$result = $wpdb->get_results($query, 'ARRAY_A');
-$checkFirst = 0;
+$result = $wpdb->get_results($query, 'ARRAY_A');  //Get the results of the above query in an ARRAY_A form
+$checkFirst = 0; //Counter for the number of columns we will have, since the number varies to how many languages are activated
 ?>
 <div>
     <?php
@@ -27,7 +21,9 @@ $checkFirst = 0;
             . "WHERE TABLE_SCHEMA='$databaseName' "
             . "AND (TABLE_NAME='" . _LEXICON_WORD_DETAILS . "' OR TABLE_NAME='" . _LEXICON_WORD_CODE . "') AND (COLUMN_NAME NOT IN ('code_id', 'code'));");
     
-    for ($counter = 0; $counter <= (count($result) - 1); $counter++) {
+    /* The above variable holds the result column names from the tables _LEXICON_WORD_DETAILS and _LEXICON_WORD_CODE, except code_id and code*/
+    
+    for ($counter = 0; $counter <= (count($result) - 1); $counter++) {  /* With this for, we generate the content of the file we want to print */
         $res = $result[$counter];
         if ($checkFirst <= (count($word_details_cols) - 1)) {
             for ($i = 0; $i <= count($word_details_cols) - 1; $i++) {
@@ -55,22 +51,11 @@ $checkFirst = 0;
             }
         }
     }
-    //echo $csv_export;
-    //printf('<a href= "#" class="button-primary" onClick="export_data_to_CSV(\'%s\');">Export</a> ', var_dump($csv_export));
-    //echo sprintf('<a href= "#" class="button-primary" onClick="export_data_to_CSV(%s);">Export</a>', $csv_export);
-    //echo $csv_export;
-    // newline (seems to work both on Linux & Windows servers)
-    //$csv_export.= '
-    //';
+
     ?>
     
 
 </div>
 <div style="display: none" id="data_to_export"><?php echo $csv_export ?></div>
-<a href= "#" class="button-primary" onClick="export_data_to_CSV('<?php echo count($result) ?>');">Export</a>
+<a href= "#" class="button-primary" onClick="export_data_to_CSV('<?php echo count($result) ?>');">Export</a> <!-- THE REST ARE HANDLED BY THE JavaScript FUNCTION  -->
 <?php
-// Export the data and prompt a csv file for download
-//header('Content-Encoding: UTF-8');
-//header("Content-type: text/csv");
-//header("Content-Disposition: attachment; filename=".$csv_filename."");
-//echo($csv_export);
